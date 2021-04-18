@@ -1,0 +1,184 @@
+{
+    "app": {
+        "display_brightness": 0,
+        "commands": {
+            "shutdown":"sudo shutdown -P now",
+            "reboot":"sudo reboot"
+        }
+    },
+    "mqtt_brokers": [
+        {
+            "id": 0,
+            "name": "Default MQTT Broker (i.e. Homeassistant)",
+            "user": "**yourusername**",
+            "password": "**yourpassword**",
+            "host": "**yourhostip**",
+            "port": 1883,
+            "publish": {
+                "base_topic": "Octosign"
+            }
+        }
+    ], 
+    "display": {
+        "name": "OctoSign",
+        "update_interval": 1,
+        "scroll_speed": 0.04,        
+        "type": "printer_sign",
+        "emulator": {
+            "width": 64,
+            "height": 8,
+            "rotate": 3,
+            "mode": "RGB",
+            "transform": "none",
+            "scale": 100
+        },
+        "max7219": {
+            "port": 0,
+            "device": 0,
+            "cascaded": 8, 
+            "block_orientation":-90, 
+            "blocks_arranged_in_reverse_order": false,
+            "contrast": 0
+        },
+        "areas": [
+            {
+                "enabled": true,
+                "order": 0,
+                "id": "msg",
+                "left": 0,
+                "top": 0,
+                "width": 32,
+                "height": 8,
+                "font": "tiny",
+                "halign": "center",
+                "valign": "middle",
+                "scrollable": true
+            },
+            {
+                "enabled": true,
+                "order": 1,
+                "id": "err",
+                "left": 32,
+                "top": 0,
+                "width": 32,
+                "height": 8,
+                "font": "tiny",
+                "halign": "center",
+                "valign": "middle",
+                "scrollable": true
+            },
+            {
+                "enabled": true,
+                "order": 2,
+                "id": "temp1",
+                "left": 32,
+                "top": 0,
+                "width": 16,
+                "height": 8,
+                "font": "tiny",
+                "halign": "left",
+                "valign": "bottom",
+                "scrollable": false
+            },
+            {
+                "enabled": true,
+                "order": 3,
+                "id": "temp2",
+                "left": 48,
+                "top": 0,
+                "width": 16,
+                "height": 8,
+                "font": "tiny",
+                "rows": 1,
+                "halign": "right",
+                "valign": "bottom",
+                "scrollable": false
+            }
+        ]
+    },
+    "encoder": {
+        "enabled": true,
+        "pin_left": 18,
+        "pin_right": 17,
+        "pin_click": 23,
+        "sensitivity": 20
+    },
+    "printers": [
+        {
+            "name": "Endr3Pro",
+            "mqtt": {
+                "enabled": true,
+                "broker_id": 0,
+                "field_map": [
+                    { "name":"state_code",      "query":"state_id",         "topic": "octoPrint/event/PrinterStateChanged",                     "translate": "lookups.state_name_to_code",   "default":0 },
+                    { "name":"status",          "query":"state_string",     "topic": "octoPrint/event/PrinterStateChanged",                     "translate": "lookups.friendly_name"},
+                    { "name":"progress",        "query":"progress",         "topic": "octoPrint/progress/printing"  },
+                    { "name":"bed.actual",      "query":"actual",           "topic": "octoPrint/temperature/bed"  },
+                    { "name":"bed.target",      "query":"target",           "topic": "octoPrint/temperature/bed"  },
+                    { "name":"extruder.actual", "query":"actual",           "topic": "octoPrint/temperature/tool0"  },
+                    { "name":"extruder.target", "query":"target",           "topic": "octoPrint/temperature/tool0"  },
+                    { "name":"totalLayers",     "query":"totalLayer",       "topic": "octoPrint/event/DisplayLayerProgress_progressChanged"  },
+                    { "name":"currentLayer",    "query":"currentLayer",     "topic": "octoPrint/event/DisplayLayerProgress_progressChanged"  },
+                    { "name":"time_remaining",  "query":"printTimeLeft",    "topic": "octoPrint/event/DisplayLayerProgress_progressChanged"  },
+                    { "name":"time_est_end",    "query":"estimatedEndTime", "topic": "octoPrint/event/DisplayLayerProgress_progressChanged"  },
+                    { "name":"filename",        "query":"path",             "topic": "octoPrint/progress/printing"  }
+               ]
+            },
+            "temperature": {
+                "decimals": 0,
+                "display_units":  "\u00B2",
+                "convert_to_fahrenheit": true
+            },
+            "lookups": {
+                "friendly_name": {
+                    "OPERATIONAL" : "Ready",
+                    "CANCELLING" : "cancelled"                
+                },
+                "state_name_to_code": {
+                    "CLOSED_WITH_ERROR": -101,
+                    "ERROR": -100,
+                    "OFFLINE": -1,
+                    "CLOSED": -1,
+                    "NONE" : 0,
+                    "UNKNOWN" : 0,
+                    "INITIALIZING": 1,
+                    "STARTING": 1,
+                    "OPEN_SERIAL": 1,
+                    "DETECT_SERIAL": 1,
+                    "DETECT_BAUDRATE": 1,
+                    "CONNECTING": 1,
+                    "TRANSFERRING_FILE": 10,
+                    "OPERATIONAL" : 10,
+                    "PRINTING" : 20,
+                    "PAUSING" : 40,
+                    "PAUSED" : 49,
+                    "RESUMING" : 50,
+                    "CANCELLING": 30,
+                    "CANCELLED": 39
+                    
+                }
+            }
+        }
+    ],
+    "sensors": [
+        {
+            "name": "RoomTemp",
+            "type": "22",
+            "temperature": {
+                "decimals": 0,
+                "display_units":  "\u00B1",
+                "convert_to_fahrenheit": true
+            },
+            "dht": {
+                "pin_data": 4
+            },
+            "mqtt": {
+                "enabled": true,
+                "broker_id": 0,
+                "topic_temperature": "/room/temperature",
+                "topic_humidity": "/room/humidity"
+            }
+        }
+    ]
+}
+

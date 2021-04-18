@@ -1,0 +1,15 @@
+cbor2==5.2.0
+decorator==4.4.2
+Deprecated==1.2.12
+luma.core==2.3.1
+luma.emulator==1.4.0
+paho-mqtt==1.5.1
+Pillow==8.2.0
+ply==3.11
+pyftdi==0.52.9
+pygame==2.0.1
+pyserial==3.5
+pyusb==1.1.1
+six==1.15.0
+smbus2==0.4.1
+wrapt==1.12.1

@@ -1,5 +1,5 @@
 # What is OctoLEDSign?
-This code supports an LED Matrix sign that reads information from Octoprint via MQTT. The sign can display such things as the current operation (status), the extruder or bed temp, the filename, etc.   *Note: the LED panel/shelf displayed in the picture is a separate project and not part of the sign itself.*
+This code supports an LED Matrix sign that reads information from Octoprint via [MQTT](https://mqtt.org/). The sign can display such things as the current operation (status), the extruder or bed temp, the filename, etc.   *Note: the LED panel/shelf displayed in the picture is a separate project and not part of the sign itself.*
 
 <img src="./images/octoledsign_closeup.jpg" width="400" alt="OctoLedSign">
 <img src="./images/octoledsign.jpg" width="400" alt="OctoLedSign">
@@ -43,6 +43,8 @@ There are many ways to wire up these parts to the raspberry pi, but I have liste
 <img src="./images/raspzerow.pins.jpg">
 
 *Note: you may want/need to consolidate power and ground pins.*
+
+<img src="./images/octoledsign_circuit.png" width=500>
 
 - Raspberry Pi to the LED Matrix
     | Raspberry Pi Zero | max7219 |

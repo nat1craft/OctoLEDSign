@@ -4,6 +4,8 @@ This code supports an LED Matrix sign that reads information from Octoprint via 
 ## Video of sign in action
 <a href="https://youtu.be/m6aNKA-jmvc" target="video"><img src="http://img.youtube.com/vi/m6aNKA-jmvc/0.jpg" width=200></a>
 
+## Photos
+
 <img src="./images/octoledsign_closeup.jpg" width="300" alt="OctoLedSign">
 <img src="./images/octoledsign.jpg" height="300" alt="OctoLedSign">
 

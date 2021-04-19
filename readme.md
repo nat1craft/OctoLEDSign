@@ -21,7 +21,7 @@ The setup and configuration of the required infrastructure is beyond the scope o
 - [Raspberry Pi Zero W](https://amzn.to/3tyssMa) (or better like [3b/3b+/4](https://amzn.to/3drVtTP)) with a power supply!
     - Install  **Raspberry Pi OS Lite 32 bit**. You do not need the overhead of the full desktop experience.
     - You can use the [Raspberry Pi Imager](https://www.raspberrypi.org/software/) to accomplish this.
-    - Check the web for guides on installing the OS to your raspberry pi (it is beyong the scope of this article)
+    - Check the web for guides on installing the OS to your raspberry pi (it is beyond the scope of this article)
 
     <img src="./images/raspzerow.jpg" width="200" alt="raspberry pi zero w">
 

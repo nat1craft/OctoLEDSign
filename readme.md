@@ -1,52 +1,107 @@
-# Setting up a Python Workspace
-- Add Folder to Workspace `D:\misc\OctoSign`
-- **View | Command Palette | Python: Create Terminal**
-    - Create virtual Environment: 
-    `python -m venv .venv`
-    - Pick **View | Command Palette | Python : Select Interpreter**
-    - Select **Entire Workspace**
-    - Select **Python 3.9.2 | .venv\Scripts\python.exe**
-- Upgrade pip if necessary in your Python Terminal
-`python -m pip install --upgrade pip`
-- Add application file `app.py`
-- Add logic such as:
+# What is OctoLEDSign?
+This code supports an LED Matrix sign that reads information from Octoprint via MQTT. The sign can display such things as the current operation (status), the extruder or bed temp, the filename, etc.   *Note: the LED panel/shelf displayed in the picture is a separate project and not part of the sign itself.*
 
-``` python
-import time
-from datetime import datetime
-import threading
-import http.client as httplib
-import json
-import urllib.request
-import sys
-from enum import IntEnum
+<img src="./images/octoledsign_closeup.jpg" width="400" alt="OctoLedSign">
+<img src="./images/octoledsign.jpg" width="400" alt="OctoLedSign">
 
-class App():
-    def main(self):
-        print("Application up and running!")
+# What do you need?
+For this code to be useful, you will need the items listed below. 
 
-if __name__ == "__main__":
-    app = App()
-    app.main()
-```
+*Note: Some items listed have affiliate links where you can purchase the products. They might provide minor income to support this project and others like it at no cost to you.*
 
-- Select <kbd>ctrl+shift+d</kbd> (or **Run and Debug** on left-side menu) then **Run and Debug**
-- Select **Python**
+## Infrastructure
+- [Ender 3 Pro](https://amzn.to/3sp3RIh) You will need a 3d printer! I have setup the code to be very flexible about the type of printer, but it was targeted to an Ender3 (Pro). I can't say enough good about this little workhorse, especially for a beginner.  The `settings.json` file allows you to map fields to MQTT topics, so theoretically, anything that generates MQTT messages to feed the sign will work.
+- You will want access to an MQTT server. 
+    - For my purposes, I use [HomeAssistant](https://www.home-assistant.io/) setup with the Mosquito add-on. This is running on a dedicated raspberry-pi 3b+ and is working quite well.
+- You will need [Octoprint](https://octoprint.org/) setup! For my purposes I have an octoprint server running on an old mac-mini running windows 10. The sign does not talk directly to OctoPrint. However, OctoPrint talks to the MQTT server (and the sign talks to the MQTT server).
+- You will want the [Octoprint MQTT Plugin](https://plugins.octoprint.org/plugins/mqtt/) installed
 
-# Setting up a Git Repository
-- After creating your workspace (see above)...
-- Type <kbd>ctrl+shift+G</kbd> to bring up the **source control** left-side menu
-- Select **Publish to Github**
-- Select **Publish to Github private repository.....**
-- Remove the **.venv** from being published
-- Make a requirements.txt file 
-`pip freeze > requirements.txt`
+## Hardware
+- [Raspberry Pi Zero W](https://amzn.to/3tyssMa) (or better like [3b/3b+/4](https://amzn.to/3drVtTP)) with a power supply!
+
+    <img src="./images/raspzerow.jpg" width="200" alt="raspberry pi zero w">
+
+
+- A set of [max7219 x 4 matrix LED matrix displays](https://amzn.to/3ttKMpH).  I have purchased these from different vendors and there are very slight differences between them. Depending on the vendor, the boards used might vary in size by ~2mm.  This also slightly affects the alignment between each module in the 4-module strip. 
+
+    *Note: You can daisy chaining multiples of these strips for a bigger sign, just update the `settings.json` file. In the base settings, it supports a sign made up of 2 of these strips; the top strip is blue and the bottom is red (each strip holds 4 arrrays, meaning 8 arrays total)*
+
+    <img src='./images/max7219x4.jpg' alt='max7219 x 4 matrix LED' width=200> 
+
+- **Optional:** the following components are optional.
+    - [DHT22 temperature and humidity sensor](https://amzn.to/32tgreZ). If you want to monitor the air temp around the printer, then by all means add one of these to the design.  The code provided also publishes this temperature the MQTT server (if the sensor exists).  Please note that sampling this DHT22 sensor takes about 0.5 seconds. This would produce a noticeable pause in animations, so the sampling rate was dialed back to once per minute (which is more than reasonable)
+    
+        <img src='./images/dht22.jpg' alt='dht22 temperature/humidity sensor' width=200> 
+
+    - [360 Degree Rotary Encoder](https://amzn.to/3gjnUFB) of your choice. This is used to control the display brightness on-the-fly, but you can eliminate this altogether if you want to set the brightness to a fixed value in the `settings.json` file.  I like these because they also act as a pushbutton switch by pressing the knob.
+    
+        <img src='./images/rotary.jpg' alt='360 degree rotary encoder and switch' width=200> 
+
+### Wiring Up the Hardware
+There are many ways to wire up these parts to the raspberry pi, but I have listed how I configured them below. If you google search, you will find in-depth instructions about each piece of hardware and how to wire them to the pi.  Consider these as suggestions...
+
+<img src="./images/raspzerow.pins.jpg">
+
+*Note: you may want/need to consolidate power and ground pins.*
+
+- Raspberry Pi to the LED Matrix
+    | Raspberry Pi Zero | max7219 |
+    | ------------------|---------|
+    | Pin 2   (5V Power)| VCC     |
+    | Pin 6   (Ground)  | GND     |
+    | Pin 19  (GPIO 10) | DIN     |
+    | Pin 24  (GPIO 8)  | CS      |
+    | Pin 23  (GPIO 11) | CLK     |
+
+- Raspberry Pi to DHT22
+    | Raspberry Pi Zero | dht22   |
+    | ------------------|---------|
+    | Pin 4  (5V Power) | VCC (+) |
+    | Pin 14 (Ground)   | GND (-) |
+    | Pin 7  (GPIO 4)   | OUT     |
+
+    In the `settings.json` file, this pin is reflected using GPIO numbering like this:
+    ```
+        "sensors": [
+            {
+                "name": "RoomTemp",
+                "type": "22",
+                "temperature": {...
+                },
+                "dht": {
+                    "pin_data": 4       // GPIO4 is physical pin #7
+                },
+                "mqtt": {...
+                }
+            }
+        ]
+    ```
+
+- Raspberry Pi to Rotary Encoder
+    | Raspberry Pi Zero | Encoder |
+    | ------------------|---------|
+    | Pin 20  (Ground)  | GND     |
+    | Pin 1   (3V Power)| (+)     |
+    | Pin 16  (GPIO 23) | SW      |
+    | Pin 12  (GPIO 18) | DT      |
+    | Pin 11  (GPIO 17) | CLK     |
+
+    In the `settings.json` file, these pins are reflected using GPIO numbering like this:
+    ```
+        "encoder": {
+            "enabled": true,
+            "pin_left": 17,         // GPIO17 is physical pin #11
+            "pin_right": 18,        // GPIO18 is physical pin #12
+            "pin_click": 23,        // GPIO23 is physical pin #16
+            "sensitivity": 20
+        },
+    ```
 
 # Cloning this repository
-- open a command prompt in your folder of choice ex: `cd myprojects`
+- open a terminal in your folder of choice ex: `~/octosign`
 - run the following command:
     ```
-    d:\myprojects> git clone https://github.com/nat1craft/OctoLEDSign
+    ~/octosign $ git clone https://github.com/nat1craft/OctoLEDSign
     ```
 
 # Installing Libraries

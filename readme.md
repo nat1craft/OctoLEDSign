@@ -211,6 +211,7 @@ The first thing you need to do is configure your software. All of the configurab
 - One helpful tip in determining "why is my printer not sending messages?" is to use your MQTT server's abilities to temporarily subscribe to a topic. Homeassistant has this capability buried in its bowels.
     - Go to **Configuration | Integrations** and click on the **Configure** link under the **MQTT** integration
     - Here you can **Listen to a topic**. Add the standard octoprint topic ```octoPrint/event/PrinterStateChanged``` and click **Start Listening**. You should see your printer's current state.  If not, check that your OctoPrint MQTT Plugin is working correctly.
+    - You could also use the free [MQTT Explorer](http://mqtt-explorer.com/) which is quite simply: awesome! I use the Windows 10 version but I believe it is also available for Mac,Ubuntu, and Linux.
 
 # References
 There are many articles on the web that explain the various processes and components used in this project. Some of the more helpful ones are as follows:

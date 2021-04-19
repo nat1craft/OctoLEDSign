@@ -126,7 +126,7 @@
             },
             "temperature": {
                 "decimals": 0,
-                "display_units":  "\u00B2",
+                "display_units":  "\u00B1",
                 "convert_to_fahrenheit": true
             },
             "lookups": {

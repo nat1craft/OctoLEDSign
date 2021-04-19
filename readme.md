@@ -2,7 +2,7 @@
 This code supports an LED Matrix sign that reads information from Octoprint via [MQTT](https://mqtt.org/). The sign can display such things as the current operation (status), the extruder or bed temp, the filename, etc.   *Note: the LED panel/shelf displayed in the picture is a separate project and not part of the sign itself.*
 
 ## Video of sign in action
-<a href="https://youtu.be/m6aNKA-jmvc" target="video"><img src="http://img.youtube.com/vi/m6aNKA-jmvc/0.jpg" width=200></a>
+<a href="https://youtu.be/m6aNKA-jmvc" target="_video"><img src="http://img.youtube.com/vi/m6aNKA-jmvc/0.jpg" width=200></a>
 
 ## Photos
 
